@@ -28,9 +28,9 @@ func main() {
 	// Allow frontend to access the Go API
 	router.Use(func(c *gin.Context) {
 		c.Writer.Header().Set(
-			"Access-Control-Allow-Origin",
-			"http://localhost:5173",
-		)
+    "Access-Control-Allow-Origin",
+    "https://pulsepoll-frontend-gv2i.onrender.com",
+)
 		c.Writer.Header().Set(
 			"Access-Control-Allow-Methods",
 			"GET, POST, PUT, DELETE, OPTIONS",
