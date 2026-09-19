@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
-const API_URL = "http://localhost:8080/api";
+// Deployed Go/Gin backend
+const API_URL = "https://pulsepoll-syhz.onrender.com/api";
 
 function App() {
   const [polls, setPolls] = useState([]);
@@ -32,26 +33,26 @@ function App() {
 
   // Fetch polls when page loads
   useEffect(() => {
-  const loadPolls = async () => {
-    try {
-      setError("");
+    const loadPolls = async () => {
+      try {
+        setError("");
 
-      const response = await fetch(`${API_URL}/polls`);
+        const response = await fetch(`${API_URL}/polls`);
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch polls");
+        if (!response.ok) {
+          throw new Error("Failed to fetch polls");
+        }
+
+        const data = await response.json();
+        setPolls(data);
+      } catch (err) {
+        console.error("Error fetching polls:", err);
+        setError("Unable to connect to the PulsePoll backend.");
       }
+    };
 
-      const data = await response.json();
-      setPolls(data);
-    } catch (err) {
-      console.error("Error fetching polls:", err);
-      setError("Unable to connect to the PulsePoll backend.");
-    }
-  };
-
-  loadPolls();
-}, []);
+    loadPolls();
+  }, []);
 
   // Update an option
   const handleOptionChange = (index, value) => {
