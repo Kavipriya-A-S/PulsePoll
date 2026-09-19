@@ -12,10 +12,10 @@ import (
 )
 
 func main() {
-	// Load environment variables from .env
-	if err := godotenv.Load(); err != nil {
-		panic("Error loading .env file")
-	}
+	// Load .env for local development.
+	// On Render, environment variables are provided directly,
+	// so the absence of .env should not stop the application.
+	_ = godotenv.Load()
 
 	// Connect to MongoDB
 	if err := config.ConnectDatabase(); err != nil {
@@ -25,11 +25,20 @@ func main() {
 	// Create Gin router
 	router := gin.Default()
 
-	// Allow React frontend to access the Go API
+	// Allow frontend to access the Go API
 	router.Use(func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		c.Writer.Header().Set(
+			"Access-Control-Allow-Origin",
+			"http://localhost:5173",
+		)
+		c.Writer.Header().Set(
+			"Access-Control-Allow-Methods",
+			"GET, POST, PUT, DELETE, OPTIONS",
+		)
+		c.Writer.Header().Set(
+			"Access-Control-Allow-Headers",
+			"Content-Type, Authorization",
+		)
 
 		if c.Request.Method == http.MethodOptions {
 			c.AbortWithStatus(http.StatusNoContent)
@@ -64,7 +73,8 @@ func main() {
 	// Results route
 	router.GET("/api/polls/:id/results", routes.GetPollResults)
 
-	// Get port from .env
+	// Get port from environment.
+	// Render provides PORT automatically.
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
